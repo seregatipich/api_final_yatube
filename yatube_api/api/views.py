@@ -1,15 +1,12 @@
-from django.contrib.auth import get_user_model
-from rest_framework.pagination import LimitOffsetPagination
-from rest_framework.generics import get_object_or_404
-from rest_framework import viewsets, permissions, filters
 from django_filters.rest_framework import DjangoFilterBackend
-from posts.models import Post, Group, Follow, User
-from api.serializers import PostSerializer, \
-    GroupSerializer, CommentSerializer, FollowSerializer
+from rest_framework import filters, permissions, viewsets, mixins
+from rest_framework.generics import get_object_or_404
+from rest_framework.pagination import LimitOffsetPagination
+
 from api.permissions import AuthorOrReading
-
-
-User = get_user_model()
+from api.serializers import (CommentSerializer, FollowSerializer,
+                             GroupSerializer, PostSerializer)
+from posts.models import Follow, Group, Post, User
 
 
 class PostViewSet(viewsets.ModelViewSet):
@@ -47,16 +44,17 @@ class CommentViewSet(viewsets.ModelViewSet):
         return post.comments.all()
 
 
-class FollowViewSet(viewsets.ModelViewSet):
-    permission_classes = (permissions.IsAuthenticated,)
+class FollowViewSet(mixins.CreateModelMixin,
+                    mixins.ListModelMixin,
+                    viewsets.GenericViewSet):
+
     serializer_class = FollowSerializer
+    permission_classes = (permissions.IsAuthenticated,)
     filter_backends = (filters.SearchFilter,)
-    pagination_class = LimitOffsetPagination
-    search_fields = ('user__username', 'following__username')
+    search_fields = ('following__username',)
 
     def get_queryset(self):
-        return Follow.objects.filter(user=self.request.user)
+        return self.request.user.follower.all()
 
     def perform_create(self, serializer):
-        user = self.request.user
-        serializer.save(user=user)
+        serializer.save(user=self.request.user)
