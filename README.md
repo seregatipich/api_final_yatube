@@ -17,7 +17,7 @@ Python 3.7, Django 3.2, DRF, JWT + Djoser
 Клонировать репозиторий и перейти в него в командной строке:
 
 ```
-https://github.com/Dreesdree/api_final_yatube
+https://github.com/seregatipich/api_final_yatube
 ```
 
 ```
