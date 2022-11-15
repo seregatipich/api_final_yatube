@@ -72,8 +72,6 @@ class Comment(models.Model):
     post = models.ForeignKey(
         Post,
         on_delete=models.CASCADE,
-        blank=True,
-        null=True,
         related_name='comments',
         verbose_name='Пост',
         help_text='Оставьте коментарий к посту'
@@ -81,13 +79,10 @@ class Comment(models.Model):
     author = models.ForeignKey(
         User,
         on_delete=models.CASCADE,
-        blank=True,
-        null=True,
         related_name='comments',
         verbose_name='Автор коментария'
     )
     text = models.TextField(
-        null=True,
         max_length=400,
         verbose_name='Коментарий',
         help_text='Коментарий к посту'
@@ -110,8 +105,6 @@ class Follow(models.Model):
     user = models.ForeignKey(
         User,
         on_delete=models.CASCADE,
-        blank=True,
-        null=True,
         related_name='follower',
         verbose_name='Имя подписчика',
     )
@@ -119,8 +112,6 @@ class Follow(models.Model):
         User,
         on_delete=models.CASCADE,
         related_name='following',
-        blank=True,
-        null=True,
         verbose_name='Подписан на:',
     )
 
